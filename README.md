@@ -1,5 +1,8 @@
 # streamlit-art-generator
 
+
+🚀 **Live Demo:** [Click Here to Try](https://ai-art-generator.streamlit.app/)
+
 # AI Art Generator
 
 Welcome to the **AI Art Generator**! This app uses **AI** to create stunning artworks from your text prompts. Simply enter a creative description, and let the power of **Stable Diffusion** generate beautiful images for you.
