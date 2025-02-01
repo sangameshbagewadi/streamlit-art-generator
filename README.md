@@ -22,7 +22,7 @@ To run this app locally, follow these steps:
 
 1. Clone this repository to your local machine:
    ```bash
-   git clone https://github.com/your_username/ai-art-gallery.git
+   git clone https://github.com/sangameshbagewadi/streamlit-art-generator.git
 
 2.To run the app locally, use the following command:
     
