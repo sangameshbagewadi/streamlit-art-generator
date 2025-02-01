@@ -21,7 +21,7 @@ def generate_image_from_api(prompt, resolution="Medium"):
     max_retries = 3  # Reduced retries for smoother experience
     retry_delay = 15  # Reduced retry delay to speed up
 
-    # Resolution handling
+    # Define different resolution sizes
     resolutions = {"Small": (256, 256), "Medium": (512, 512), "Large": (1024, 1024)}
     width, height = resolutions.get(resolution, (512, 512))  # Default to Medium
 
@@ -55,36 +55,35 @@ def generate_image_from_api(prompt, resolution="Medium"):
     st.error("⚠️ Model took too long to load. Please try again later.")
     return None
 
-# Streamlit UI
+# Streamlit UI setup
 st.title("🎨 AI-Generated Art Gallery")
 st.markdown("Enter a creative prompt, and let AI generate stunning images!")
 
-# Initialize prompt in session_state if not already set
+# Initialize session state for prompt
 if "prompt" not in st.session_state:
-    st.session_state["prompt"] = ""  # Initialize prompt if it doesn't exist
+    st.session_state["prompt"] = ""  # Initialize if not already set
 
-# Input field for prompt, using session_state
+# User input for prompt
 prompt = st.text_input("Enter your prompt:", value=st.session_state["prompt"])
 
-# Dropdown for choosing image resolution
+# Dropdown for selecting resolution
 resolution = st.selectbox("Choose image resolution:", ["Small", "Medium", "Large"])
 
-# Add options to apply filters to the generated image
+# Dropdown for applying filters to the generated image
 filter_option = st.selectbox("Apply filter to image:", ["None", "Blur", "Sharpen", "Grayscale"])
 
-# Reset button functionality
+# Reset button to clear input and generated image
 if st.button("Reset"):
-    # Clear the session state for prompt and generated image
-    st.session_state["prompt"] = ""
-    st.session_state.pop("image", None)  # Safely remove image if it exists
+    st.session_state["prompt"] = ""  # Clear prompt
+    st.session_state.pop("image", None)  # Remove generated image if it exists
 
-# If the generate button is clicked, generate the image
+# Generate button functionality
 if st.button("Generate Art"):
-    if not prompt.strip():
+    if not prompt.strip():  # Check if the prompt is empty
         st.error("⚠️ Please enter a prompt to generate an image.")
     else:
         with st.spinner("Generating your image... please wait ⏳"):
-            start_time = time.time()  # Start time for the timer
+            start_time = time.time()  # Start timer for performance tracking
             image_bytes = generate_image_from_api(prompt, resolution)
 
         if image_bytes:
@@ -92,23 +91,23 @@ if st.button("Generate Art"):
                 # Convert image bytes to an actual image
                 image = Image.open(io.BytesIO(image_bytes))
 
-                # Apply the chosen filter to the image
+                # Apply selected filter
                 if filter_option == "Blur":
                     image = image.filter(ImageFilter.BLUR)
                 elif filter_option == "Sharpen":
                     enhancer = ImageEnhance.Sharpness(image)
-                    image = enhancer.enhance(2.0)  # Increase sharpness
+                    image = enhancer.enhance(2.0)  # Increase sharpness level
                 elif filter_option == "Grayscale":
                     image = image.convert("L")  # Convert to grayscale
 
                 # Display the generated image
                 st.image(image, caption="Generated Art", use_container_width=True)
 
-                # Show time taken for image generation
+                # Display time taken for image generation
                 elapsed_time = time.time() - start_time
                 st.write(f"🕒 Image generated in {elapsed_time:.2f} seconds")
 
-                # Add a download button
+                # Download button for saving the image
                 st.download_button(
                     label="📥 Download Image",
                     data=image_bytes,
